@@ -1,0 +1,4 @@
+#Sun May 12 14:45:59 KST 2019
+base.0=/home/wonjung/Desktop/CapD/PoseEstimationForMobile/android_demo/demo_mace/app/build/intermediates/transforms/dexMerger/debug/0
+path.0=classes.dex
+renamed.0=classes.dex

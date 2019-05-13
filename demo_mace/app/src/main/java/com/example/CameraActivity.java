@@ -41,6 +41,8 @@ public class CameraActivity extends Activity {
 
     private int exType;
     private int exCount;
+    private String mCameraFacing="0";
+
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -79,6 +81,7 @@ public class CameraActivity extends Activity {
             Bundle bundle = new Bundle();
             bundle.putInt("exType", exType);
             bundle.putInt("exCount", exCount);
+            bundle.putString("mCameraFacing", mCameraFacing);
             c2bf.setArguments(bundle);
 
             getFragmentManager()

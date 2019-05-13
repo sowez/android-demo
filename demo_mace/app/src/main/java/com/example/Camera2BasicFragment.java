@@ -103,6 +103,8 @@ public class Camera2BasicFragment extends Fragment
     private int nowWidth;
 
     private Button btn_endEx;
+    private Button btn_changeView;
+    private String mCameraFacing="0";
 
     private int exType;
     private int exCount;
@@ -346,7 +348,9 @@ public class Camera2BasicFragment extends Fragment
         View v = inflater.inflate(R.layout.fragment_camera2_basic, container, false);
 
         Button btn_endEx = v.findViewById(R.id.btn_endEx);
+        Button btn_changeView = v.findViewById(R.id.btn_changeView);
         btn_endEx.setOnClickListener(listner_exEnd);
+        btn_changeView.setOnClickListener(listner_changeView);
 
         personImg = v.findViewById(R.id.person_frame);
 
@@ -468,7 +472,35 @@ public class Camera2BasicFragment extends Fragment
 //            });
         }
     };
+    View.OnClickListener listner_changeView = new View.OnClickListener() {
+        @Override
+        public void onClick(View arg0) {
 
+            // 전면 -> 후면 or 후면 -> 전면으로 카메라 상태 전환
+//            mCameraFacing = (mCameraFacing== Camera.CameraInfo.CAMERA_FACING_BACK) ?
+//                    Camera.CameraInfo.CAMERA_FACING_FRONT
+//                    : Camera.CameraInfo.CAMERA_FACING_BACK;
+            // 변경된 방향으로 새로운 카메라 View 생성
+            // ContentView, Listener 재설정
+//            init();
+            if(mCameraFacing=="1") mCameraFacing="0";
+            else mCameraFacing="1";
+
+
+//            finish();
+            Camera2BasicFragment c2bf = new Camera2BasicFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("exType", exType);
+            bundle.putInt("exCount", exCount);
+            bundle.putString("mCameraFacing", mCameraFacing);
+            c2bf.setArguments(bundle);
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, c2bf)
+                    .commit();
+        }
+
+    };
     public void endEx(){
         ExEndPopup popup = new ExEndPopup(getActivity(), exType, exCount, new ExEndPopup.PopupEventListener() {
             @Override

@@ -80,9 +80,8 @@ public class PoseEstimationFloatInception extends PoseEstimation {
         if (!CameraActivity.isOpenCVInit)
             return;
 
-        //先进行高斯滤波,5*5
         if (mMat == null)
-            mMat = new Mat(96, 96, CvType.CV_32F);
+            mMat = new Mat(getOutputSizeY(), getOutputSizeX(), CvType.CV_32F);
 
         float[] tempArray = new float[getOutputSizeY() * getOutputSizeX()];
         float[] outTempArray = new float[getOutputSizeY() * getOutputSizeX()];
@@ -91,8 +90,8 @@ public class PoseEstimationFloatInception extends PoseEstimation {
 
         for (int i = 0; i < 14; i++) {
             int index = 0;
-            for (int x = 0; x < 96; x++) {
-                for (int y = 0; y < 96; y++) {
+            for (int x = 0; x < getOutputSizeX(); x++) {
+                for (int y = 0; y < getOutputSizeY(); y++) {
                     tempArray[index] = result[x * getOutputSizeY() * 14 + y * 14 + i];
                     index++;
                 }

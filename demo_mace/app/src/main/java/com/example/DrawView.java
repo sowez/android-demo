@@ -23,7 +23,9 @@ import android.graphics.PointF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
@@ -48,10 +50,16 @@ public class DrawView extends View {
     private int mRatioWidth = 0;
     private int mRatioHeight = 0;
 
-    private final CopyOnWriteArrayList<PointF> mDrawPoint = new CopyOnWriteArrayList<>();
-    private int mWidth, mHeight;
-    private float mRatioX, mRatioY;
-    private int mImgWidth, mImgHeight;
+    public ArrayList<PointF> mDrawPoint = new ArrayList<PointF>();
+    private int mWidth       = 0;
+    private int mHeight      = 0;
+    private float mRatioX    = 0;
+    private float mRatioY    = 0;
+    private int mImgWidth    = 0;
+    private int mImgHeight   = 0;
+    private int time = 0;
+
+    private ImageView person_frame;
 
     private final int[] mColorArray = new int[]{
             COLOR_TOP, COLOR_NECK,
@@ -125,16 +133,22 @@ public class DrawView extends View {
             mPaint.setAntiAlias(true);
         }
 
+        if (mDrawPoint.isEmpty()) {
+            return;
+        }
+
         canvas.drawColor(Color.TRANSPARENT);
 
-        int colorIndex = 0;
-        for (PointF pointF : mDrawPoint) {
+//        for (PointF pointF : mDrawPoint) {
+        for (int colorIndex = 0;colorIndex<13;colorIndex++){
 //            if (pointF.x == 0 && pointF.y == 0) {
 //                colorIndex++;
 //                continue;
 //            }
-            mPaint.setColor(mColorArray[colorIndex++]);
-            canvas.drawCircle(pointF.x, pointF.y, 8, mPaint);
+
+
+            mPaint.setColor(mColorArray[colorIndex]);
+            canvas.drawCircle(mDrawPoint.get(colorIndex).x, mDrawPoint.get(colorIndex).y, 8, mPaint);
         }
 
         mPaint.setColor(Color.parseColor("#6fa8dc"));

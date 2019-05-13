@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /home/wonjung/Desktop/CapD/PoseEstimationForMobile/android_demo/demo_mace/openCVLibrary341/java/src/org/opencv/engine/OpenCVEngineInterface.aidl
+ * Original file: /home/wonjung/Desktop/CapD/android-demo/demo_mace/openCVLibrary341/java/src/org/opencv/engine/OpenCVEngineInterface.aidl
  */
 package org.opencv.engine;
 /**

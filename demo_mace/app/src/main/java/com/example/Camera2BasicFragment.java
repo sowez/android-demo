@@ -22,6 +22,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -54,6 +55,9 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,7 +79,7 @@ public class Camera2BasicFragment extends Fragment
     /**
      * Tag for the {@link Log}.
      */
-    private static final String TAG = "PoseEstimationDemo";
+    private static final String TAG = "ParTner";
 
     private static final String FRAGMENT_DIALOG = "dialog";
 
@@ -86,11 +90,31 @@ public class Camera2BasicFragment extends Fragment
     private final Object lock = new Object();
     private boolean runClassifier = false;
     private boolean checkedPermissions = false;
-    private TextView textView;
     private AutoFitTextureView textureView;
-    private AutoFitFrameLayout layout_frame;
+    private AutoFitFrameLayout layoutFrame;
+    private TextView textView;
     private DrawView drawView;
     private PoseEstimation classifier;
+    private ImageView personImg;
+    private Exercise exercise;
+    private ViewGroup layoutBottom;
+//    private ImageClassifier classifier;
+    private int nowHeight;
+    private int nowWidth;
+
+    private Button btn_endEx;
+
+    private int exType;
+    private int exCount;
+
+    private int img_red;
+    private int img_green;
+
+    private int readyCounter = 0;
+    private int exerciseCounter = 0;
+    private int exerciseStep = 0;
+    private int endStep = 0;
+    public static final int READY_BOUND = 15;
 
     /**
      * Max preview width that is guaranteed by Camera2 API
@@ -288,8 +312,7 @@ public class Camera2BasicFragment extends Fragment
         int h = aspectRatio.getHeight();
         for (Size option : choices) {
             if (option.getWidth() <= maxWidth
-                    && option.getHeight() <= maxHeight
-                    && option.getHeight() == option.getWidth() * h / w) {
+                    && option.getHeight() <= maxHeight) {
                 if (option.getWidth() >= textureViewWidth && option.getHeight() >= textureViewHeight) {
                     bigEnough.add(option);
                 } else {
@@ -320,7 +343,42 @@ public class Camera2BasicFragment extends Fragment
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_camera2_basic, container, false);
+        View v = inflater.inflate(R.layout.fragment_camera2_basic, container, false);
+
+        Button btn_endEx = v.findViewById(R.id.btn_endEx);
+        btn_endEx.setOnClickListener(listner_exEnd);
+
+        personImg = v.findViewById(R.id.person_frame);
+
+        exType = this.getArguments().getInt("exType");
+        exCount = this.getArguments().getInt("exCount");
+        Log.e("받아온거", exType+" "+exCount);
+
+        // 운동 종류에 따라 class, imgsrc 등 설정
+        //exercise에 상속
+        switch (exType){
+            case 1:
+                exercise = new Flank(exCount);
+                img_red = R.drawable.flank_red;
+                img_green = R.drawable.flank_green;
+                break;
+            case 2:
+                exercise = new Squat(exCount);
+                img_red = R.drawable.squat_red;
+                img_green = R.drawable.squat_green;
+                break;
+            case 3:
+                exercise = new JumpingJack(exCount);
+                img_red = R.drawable.jumping_red;
+                img_green = R.drawable.jumping_green;
+                break;
+            default: break;
+        }
+        endStep = exercise.getSteps();
+        personImg.setImageResource(img_red);
+
+        return v;
+//        return inflater.inflate(R.layout.fragment_camera2_basic, container, false);
     }
 
     /**
@@ -330,8 +388,9 @@ public class Camera2BasicFragment extends Fragment
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         textureView = view.findViewById(R.id.texture);
         textView = view.findViewById(R.id.text);
-        layout_frame = view.findViewById(R.id.layout_frame);
+        layoutFrame = view.findViewById(R.id.layout_frame);
         drawView = view.findViewById(R.id.drawview);
+        personImg = view.findViewById(R.id.person_frame);
         if (classifier != null)
             drawView.setImgSize(classifier.getImageSizeX(), classifier.getImageSizeY());
     }
@@ -380,6 +439,57 @@ public class Camera2BasicFragment extends Fragment
     public void onDestroy() {
         classifier.close();
         super.onDestroy();
+    }
+
+    View.OnClickListener listner_exEnd = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.e("pop up 전", exType+""+exCount);
+            endEx();
+//            ExEndPopup popup = new ExEndPopup(getActivity(), exType, exCount, new ExEndPopup.PopupEventListener() {
+//                @Override
+//                public void popupEvent(String result) {
+//                    // 횟수 입력되었으면 운동 프리뷰 액티비티로 넘어가기
+//                    if (result.equals("selectEx")){
+//                        Toast.makeText(getActivity(), "go to select exercise page", Toast.LENGTH_SHORT).show();
+//                        Intent intent = new Intent(getActivity(),ExListActivity.class);
+////                        intent.putExtra("exCount",exCount);
+////                        intent.putExtra("exType",exType);
+//                        startActivity(intent);
+//                    }
+//                    else if(result.equals("goCalander")){
+//                        Toast.makeText(getActivity(), "go Calender", Toast.LENGTH_SHORT).show();
+//                        Intent intent = new Intent(getActivity(),ExHistoryActivity.class);
+////                        intent.putExtra("exCount",exCount);
+////                        intent.putExtra("exType",exType);
+//                        startActivity(intent);
+//                    }
+//                }
+//            });
+        }
+    };
+
+    public void endEx(){
+        ExEndPopup popup = new ExEndPopup(getActivity(), exType, exCount, new ExEndPopup.PopupEventListener() {
+            @Override
+            public void popupEvent(String result) {
+                // 횟수 입력되었으면 운동 프리뷰 액티비티로 넘어가기
+                if (result.equals("selectEx")){
+                    Toast.makeText(getActivity(), "go to select exercise page", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(),ExListActivity.class);
+//                        intent.putExtra("exCount",exCount);
+//                        intent.putExtra("exType",exType);
+                    startActivity(intent);
+                }
+                else if(result.equals("goCalander")){
+                    Toast.makeText(getActivity(), "go Calender", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(),ExHistoryActivity.class);
+//                        intent.putExtra("exCount",exCount);
+//                        intent.putExtra("exType",exType);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     /**
@@ -471,17 +581,41 @@ public class Camera2BasicFragment extends Fragment
                                 largest);
 
                 // We fit the aspect ratio of TextureView to the size of preview we picked.
+                nowHeight= previewSize.getHeight();
+                nowWidth = previewSize.getWidth();
                 int orientation = getResources().getConfiguration().orientation;
-                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    layout_frame.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
-                    textureView.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
-                    drawView.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
-                } else {
-                    layout_frame.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
-                    textureView.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
-                    drawView.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
+//                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                    layout_frame.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
+//                    textureView.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
+//                    drawView.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
+//                } else {
+//                    layout_frame.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
+//                    textureView.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
+//                    drawView.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
+//                }
+                if (orientation != Configuration.ORIENTATION_LANDSCAPE) {
+                    nowHeight= previewSize.getWidth();
+                    nowWidth = previewSize.getHeight();
+                }
+                layoutFrame.setAspectRatio(nowWidth, nowHeight);
+                textureView.setAspectRatio(nowWidth, nowHeight);
+                drawView.setAspectRatio(nowWidth, nowHeight);
+
+                nowWidth = View.MeasureSpec.getSize(nowWidth);
+                nowHeight = View.MeasureSpec.getSize(nowHeight);
+//        이미지 사이즈 조절 하기
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) personImg.getLayoutParams();
+                params.width = width;
+                params.height = height;
+                if (0 != nowWidth && 0 != nowHeight) {
+                    if (width < height * nowWidth / nowHeight) {
+                        params.height = width * nowHeight / nowWidth;
+                    } else {
+                        params.width = height * nowWidth / nowHeight;
+                    }
                 }
 
+                personImg.setLayoutParams(params);
                 this.cameraId = cameraId;
                 return;
             }
@@ -531,7 +665,9 @@ public class Camera2BasicFragment extends Fragment
             if (!cameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
-            manager.openCamera(cameraId, stateCallback, backgroundHandler);
+//          1-> 전면 카메라, 0->후면 카메라
+            manager.openCamera("1", stateCallback, backgroundHandler);
+//          manager.openCamera(cameraId, stateCallback, backgroundHandler);
         } catch (CameraAccessException e) {
             Log.e(TAG, "Failed to open Camera", e);
         } catch (InterruptedException e) {
@@ -735,7 +871,76 @@ public class Camera2BasicFragment extends Fragment
 //        drawView.setDrawPoint(classifier.mPrintPointArray, 0.25f);
         drawView.setDrawPoint(classifier.mPrintPointArray, 0.5f);
 
-        showToast(textToShow);
+//        showToast(textToShow);
+
+        if(readyCounter <= READY_BOUND) {// 준비 안된 상태
+
+            // 여기에서 함수 호출해서 결과값 받아서 UI 변경
+            exercise.setPoint(classifier.mPrintPointArray);
+            exercise.setDpPoint(drawView.mDrawPoint);
+            readyEx(exercise.checkReady());
+            showToast("readyCounter: "+readyCounter);
+        } else {
+            // 운동 시작
+            // 운동 실행하는 함수 호출
+            exercise.setPoint(classifier.mPrintPointArray);
+            exercise.setDpPoint(drawView.mDrawPoint);
+            startEx(exercise.doExercise(exerciseStep));
+            showToast("exerciseCounter: "+exerciseCounter+"\nexerciseStep: "+exerciseStep);
+        }
+    }
+
+
+
+    private void readyEx(boolean isReady) {
+        final Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isReady){
+                                Log.d("Exercise", "준비됨");
+                                personImg.setImageResource(img_green);
+                                readyCounter++;
+                            }
+                            else {
+                                Log.d("Exercise", "안됨");
+                                personImg.setImageResource(img_red);
+                                readyCounter = 0;
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void startEx(boolean isStepDone) {
+        final Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            personImg.setVisibility(View.INVISIBLE);
+                            if (isStepDone){
+                                Log.d("Exercise", "준비됨");
+                                personImg.setImageResource(img_green);
+                                exerciseStep++;
+                                if(exerciseStep==endStep){
+                                    exerciseCounter++;
+                                    if (exerciseCounter == exCount)
+                                        endEx();
+                                    else
+                                        exerciseStep=0;
+                                }
+                            }
+                            else {
+                                Log.d("Exercise", "안됨");
+                                //음성 처리해주기
+                            }
+                        }
+                    });
+        }
     }
 
     /**

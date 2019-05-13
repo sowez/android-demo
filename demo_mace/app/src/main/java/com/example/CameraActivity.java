@@ -16,7 +16,9 @@
 package com.example;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import com.example.R;
 
@@ -35,6 +37,10 @@ public class CameraActivity extends Activity {
     }
 
     public static boolean isOpenCVInit = false;
+    private Button btn_endEx;
+
+    private int exType;
+    private int exCount;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -63,10 +69,21 @@ public class CameraActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
+        Intent intent = getIntent();
+        exType = intent.getExtras().getInt("exType");
+        exCount = intent.getExtras().getInt("exCount");
+
         if (null == savedInstanceState) {
+            Camera2BasicFragment c2bf = new Camera2BasicFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("exType", exType);
+            bundle.putInt("exCount", exCount);
+            c2bf.setArguments(bundle);
+
             getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container, Camera2BasicFragment.newInstance())
+                    .replace(R.id.container, c2bf)
                     .commit();
         }
     }

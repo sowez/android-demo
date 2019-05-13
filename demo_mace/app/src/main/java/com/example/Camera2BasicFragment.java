@@ -475,17 +475,9 @@ public class Camera2BasicFragment extends Fragment
     View.OnClickListener listner_changeView = new View.OnClickListener() {
         @Override
         public void onClick(View arg0) {
-
-            // 전면 -> 후면 or 후면 -> 전면으로 카메라 상태 전환
-//            mCameraFacing = (mCameraFacing== Camera.CameraInfo.CAMERA_FACING_BACK) ?
-//                    Camera.CameraInfo.CAMERA_FACING_FRONT
-//                    : Camera.CameraInfo.CAMERA_FACING_BACK;
-            // 변경된 방향으로 새로운 카메라 View 생성
-            // ContentView, Listener 재설정
-//            init();
             if(mCameraFacing=="1") mCameraFacing="0";
             else mCameraFacing="1";
-
+            
             Camera2BasicFragment c2bf = new Camera2BasicFragment();
             Bundle bundle = new Bundle();
             bundle.putInt("exType", exType);
@@ -507,15 +499,11 @@ public class Camera2BasicFragment extends Fragment
                 if (result.equals("selectEx")){
                     Toast.makeText(getActivity(), "go to select exercise page", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(),ExListActivity.class);
-//                        intent.putExtra("exCount",exCount);
-//                        intent.putExtra("exType",exType);
                     startActivity(intent);
                 }
                 else if(result.equals("goCalander")){
                     Toast.makeText(getActivity(), "go Calender", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(),ExHistoryActivity.class);
-//                        intent.putExtra("exCount",exCount);
-//                        intent.putExtra("exType",exType);
                     startActivity(intent);
                 }
             }
@@ -614,15 +602,6 @@ public class Camera2BasicFragment extends Fragment
                 nowHeight= previewSize.getHeight();
                 nowWidth = previewSize.getWidth();
                 int orientation = getResources().getConfiguration().orientation;
-//                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//                    layout_frame.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
-//                    textureView.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
-//                    drawView.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
-//                } else {
-//                    layout_frame.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
-//                    textureView.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
-//                    drawView.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
-//                }
                 if (orientation != Configuration.ORIENTATION_LANDSCAPE) {
                     nowHeight= previewSize.getWidth();
                     nowWidth = previewSize.getHeight();

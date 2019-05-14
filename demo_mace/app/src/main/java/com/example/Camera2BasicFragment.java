@@ -356,7 +356,7 @@ public class Camera2BasicFragment extends Fragment
 
         exType = this.getArguments().getInt("exType");
         exCount = this.getArguments().getInt("exCount");
-        mCameraFacing = this.getArguments().getString("mCameraFacing")
+        mCameraFacing = this.getArguments().getString("mCameraFacing");
 
         // 운동 종류에 따라 class, imgsrc 등 설정
         //exercise에 상속

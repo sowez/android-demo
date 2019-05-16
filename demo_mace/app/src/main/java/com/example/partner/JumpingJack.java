@@ -20,7 +20,7 @@ public class JumpingJack extends Exercise {
         boolean isReady = true;
         for (int i = 0; i <= 13; i++) {
             for (int j = 0; j <= 1; j++) {
-                if (jj_start_range[i][j][0] <= point[j][i] && point[j][i] <= jj_start_range[i][j][1]) {
+                if (jj_start_range[i][j][0]*96/112 <= point[j][i] && point[j][i] <= jj_start_range[i][j][1]*96/112) {
                     continue;
                 } else {
                     Log.e("point error", i + "," + j + "좌표: " + jj_start_range[i][j][0] + "<=" + point[j][i] + "<=" + jj_start_range[i][j][1]);

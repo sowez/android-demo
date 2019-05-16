@@ -112,9 +112,11 @@ public class Camera2BasicFragment extends Fragment
 
     private int readyCounter = 0;
     private int exerciseCounter = 0;
+    private int resetStepCounter = 0;
     private int exerciseStep = 0;
     private int endStep = 0;
     public static final int READY_BOUND = 15;
+    public static final int RESET_STEP_BOUND = 50;
 
     /**
      * Max preview width that is guaranteed by Camera2 API
@@ -924,19 +926,26 @@ public class Camera2BasicFragment extends Fragment
                             personImg.setVisibility(View.INVISIBLE);
                             if (isStepDone){
                                 Log.d("Exercise", "준비됨");
+                                resetStepCounter = 0;
                                 personImg.setImageResource(img_green);
                                 exerciseStep++;
-                                if(exerciseStep==endStep){
+                                if(exerciseStep == endStep){
                                     exerciseCounter++;
                                     if (exerciseCounter == exCount)
                                         endEx();
                                     else
-                                        exerciseStep=0;
+                                        exerciseStep = 0;
                                 }
                             }
                             else {
                                 Log.d("Exercise", "안됨");
                                 //음성 처리해주기
+
+                                // 너무 오랫동안 다음 Step으로 못넘어가는 경우 Step 초기화
+                                if (++resetStepCounter > RESET_STEP_BOUND){
+                                    exerciseStep = 0;
+                                    resetStepCounter = 0;
+                                }
                             }
                         }
                     });

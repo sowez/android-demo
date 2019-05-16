@@ -20,19 +20,19 @@
                 android:orientation = "horizontal">
 
 
-    <com.example.AutoFitFrameLayout
+    <com.example.partner.AutoFitFrameLayout
         android:id="@+id/layout_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical">
 
-        <com.example.AutoFitTextureView
+        <com.example.partner.AutoFitTextureView
             android:id="@+id/texture"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical" />
 
-        <com.example.DrawView
+        <com.example.partner.DrawView
             android:id="@+id/drawview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -45,7 +45,7 @@
             android:layout_gravity="center"
             android:padding="25dp"/>
 
-    </com.example.AutoFitFrameLayout>
+    </com.example.partner.AutoFitFrameLayout>
 
     <RelativeLayout
         android:id="@+id/layout_bottom"

@@ -3798,11 +3798,11 @@
                 {
                     "source": "/home/wonjung/Desktop/CapD/android-demo/demo_mace/app/src/main/res/values/styles.xml",
                     "from": {
-                        "startLines": "16",
+                        "startLines": "23",
                         "startColumns": "4",
-                        "startOffsets": "645",
+                        "startOffsets": "1059",
                         "endColumns": "95",
-                        "endOffsets": "736"
+                        "endOffsets": "1150"
                     },
                     "to": {
                         "startLines": "1789",

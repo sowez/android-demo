@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Tue May 14 14:49:52 KST 2019
+#Thu May 16 15:51:52 KST 2019
 2.base=/home/wonjung/Desktop/CapD/android-demo/demo_mace/app/build/intermediates/transforms/dexMerger/debug/0
 0.path=lib/armeabi-v7a/libopencv_java3.so
 2.baseType=DIRECTORY
